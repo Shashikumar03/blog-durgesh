@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.codewithdurgesh.blog.exceptions.ApiException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,9 +64,14 @@ public class PostServiceImpl implements PostService {
 
         Post post = this.postRepo.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post ", "post id", postId));
+        Category category;
 
-        Category category = this.categoryRepo.findById(postDto.getCategory().getCategoryId()).get();
+  try{
+       category = this.categoryRepo.findById(postDto.getCategory().getCategoryId()).get();
 
+  }catch (Exception e){
+      throw new ApiException("plz select a categoty ");
+  }
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setImageName(postDto.getImageName());

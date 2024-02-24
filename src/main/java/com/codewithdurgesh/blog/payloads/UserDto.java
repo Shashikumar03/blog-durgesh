@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class UserDto {
+public class 	UserDto {
 
 	private int id;
 

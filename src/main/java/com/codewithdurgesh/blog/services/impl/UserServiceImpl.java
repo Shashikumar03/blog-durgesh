@@ -33,7 +33,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto createUser(UserDto userDto) {
 		User user = this.dtoToUser(userDto);
-		User savedUser = this.userRepo.save(user);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		User savedUser=null;
+		try{
+			 savedUser = this.userRepo.save(user);
+		}catch ( Exception e){
+			throw  new ApiException("email id is not unique");
+		}
+
 		return this.userToDto(savedUser);
 	}
 
@@ -103,13 +110,19 @@ public class UserServiceImpl implements UserService {
 		// encoded the password
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
+
 		// roles
 		Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
 
 		user.getRoles().add(role);
+    User newUser= null;
+try{
+	newUser = this.userRepo.save(user);
 
-		User newUser = this.userRepo.save(user);
 
+}catch (Exception e){
+	throw  new ApiException("email id is already presented");
+}
 		return this.modelMapper.map(newUser, UserDto.class);
 	}
 
